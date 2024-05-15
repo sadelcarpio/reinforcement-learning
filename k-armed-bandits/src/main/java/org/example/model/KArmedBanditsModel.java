@@ -1,11 +1,10 @@
 package org.example.model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class KArmedBanditsModel {
     public final int k;
-    public final List<Bandit> bandits;
+    public final ArrayList<Bandit> bandits;
 
     /**
      * @param k number of bandits
