@@ -10,8 +10,8 @@ public class TestGetArgMax {
 
     @Test
     public void testAdd() {
-        List<Double> testList = Arrays.asList(1., 2., 3., 4.);
-        List<Double> testList2 = Arrays.asList(1., 3., 1., 3., 4., 2., 4.);
+        double[] testList = new double[]{1., 2., 3., 4.};
+        double[] testList2 = new double[]{1., 3., 1., 3., 4., 2., 4.};
         List<Integer> argmax = EpsilonGreedy.getArgmax(testList);
         List<Integer> argmax2 = EpsilonGreedy.getArgmax(testList2);
         assertEquals(argmax, List.of(3));

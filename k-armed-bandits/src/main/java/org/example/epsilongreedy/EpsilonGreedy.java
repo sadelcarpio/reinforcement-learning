@@ -3,7 +3,6 @@ package org.example.epsilongreedy;
 import org.example.model.KArmedBanditsModel;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public record EpsilonGreedy(KArmedBanditsModel model, double epsilon) {
