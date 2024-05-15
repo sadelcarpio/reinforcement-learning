@@ -3,7 +3,7 @@ package org.example;
 import org.example.epsilongreedy.EpsilonGreedy;
 import org.example.model.KArmedBanditsModel;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Main {
@@ -11,8 +11,8 @@ public class Main {
         int k = 10;
         KArmedBanditsModel model = new KArmedBanditsModel(k);
         EpsilonGreedy eGreedy = new EpsilonGreedy(model, 0.01);
-        ArrayList<Double> q = eGreedy.run(10000);
-        System.out.println(model.bandits);
-        System.out.println(q);
+        double[] q = eGreedy.run(10000);
+        System.out.println(Arrays.toString(model.bandits));
+        System.out.println(Arrays.toString(q));
     }
 }
