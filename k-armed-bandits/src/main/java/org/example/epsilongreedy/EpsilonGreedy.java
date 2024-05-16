@@ -10,10 +10,13 @@ public record EpsilonGreedy(KArmedBanditsModel model, double epsilon) {
 
     public double[] run(int steps) {
         double[] q = new double[model.k];
+        int[] n = new int[model.k];
         for (int i = 0; i < model.k; i++) {
             q[i] = 0.0;
         }
-        int n = 0;
+        for (int j = 0; j < model.k; j++) {
+            n[j] = 0;
+        }
         double reward;
         for (int i = 0; i < steps; i++) {
             int a;
@@ -24,8 +27,8 @@ public record EpsilonGreedy(KArmedBanditsModel model, double epsilon) {
                 a = argmax_a.get((rand.nextInt(0, argmax_a.size())));
             }
             reward = model.pull_lever(a);
-            n += 1;
-            q[a] = q[a] + (1. / n) * (reward - q[a]);
+            n[a] += 1;
+            q[a] = q[a] + (1. / n[a]) * (reward - q[a]);
         }
         return q;
     }
