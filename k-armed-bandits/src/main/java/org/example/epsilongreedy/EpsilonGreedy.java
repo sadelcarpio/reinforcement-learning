@@ -5,30 +5,61 @@ import org.example.model.KArmedBanditsModel;
 import java.util.ArrayList;
 import java.util.Random;
 
-public record EpsilonGreedy(KArmedBanditsModel model, double epsilon) {
+public class EpsilonGreedy {
     private static final Random rand = new Random();
+    private final double[] q;
+    private final double epsilon;
+    private final KArmedBanditsModel model;
 
-    public double[] run(int steps) {
-        double[] q = new double[model.k];
-        int[] n = new int[model.k];
+
+    public EpsilonGreedy(KArmedBanditsModel model, double epsilon) {
+        q = new double[model.k];
+        this.model = model;
+        this.epsilon = epsilon;
+    }
+
+    private void update_q(int a, double reward, double step_size) {
+        q[a] = q[a] + step_size * (reward - q[a]);
+    }
+
+    private void init_q(double initial_q) {
         for (int i = 0; i < model.k; i++) {
-            q[i] = 0.0;
+            q[i] = initial_q;
         }
+    }
+
+    private int select_action() {
+        if (rand.nextDouble() < epsilon) {
+                return rand.nextInt(0, model.k);
+            } else {
+                ArrayList<Integer> argmax_a = getArgmax(q);
+                return argmax_a.get((rand.nextInt(0, argmax_a.size())));
+            }
+    }
+
+    public double[] run(int steps, double initial_q) {
+        init_q(initial_q);
+        int[] n = new int[model.k];
         for (int j = 0; j < model.k; j++) {
             n[j] = 0;
         }
         double reward;
         for (int i = 0; i < steps; i++) {
-            int a;
-            if (rand.nextDouble() < epsilon) {
-                a = rand.nextInt(0, model.k);
-            } else {
-                ArrayList<Integer> argmax_a = getArgmax(q);
-                a = argmax_a.get((rand.nextInt(0, argmax_a.size())));
-            }
+            int a = select_action();
             reward = model.pull_lever(a);
             n[a] += 1;
-            q[a] = q[a] + (1. / n[a]) * (reward - q[a]);
+            update_q(a, reward, 1. / n[a]);
+        }
+        return q;
+    }
+
+    public double[] run(int steps, double initial_q, double step_size) {
+        init_q(initial_q);
+        double reward;
+        for (int i = 0; i < steps; i++) {
+            int a = select_action();
+            reward = model.pull_lever(a);
+            update_q(a, reward, step_size);
         }
         return q;
     }
