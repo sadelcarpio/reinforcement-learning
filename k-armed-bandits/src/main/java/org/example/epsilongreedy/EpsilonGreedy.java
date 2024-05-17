@@ -18,13 +18,13 @@ public class EpsilonGreedy {
         this.epsilon = epsilon;
     }
 
-    private void updateQ(int a, double reward, double step_size) {
-        q[a] = q[a] + step_size * (reward - q[a]);
+    private void updateQ(int a, double reward, double stepSize) {
+        q[a] = q[a] + stepSize * (reward - q[a]);
     }
 
-    private void initQ(double initial_q) {
+    private void initQ(double initialQ) {
         for (int i = 0; i < model.k; i++) {
-            q[i] = initial_q;
+            q[i] = initialQ;
         }
     }
 
@@ -32,13 +32,13 @@ public class EpsilonGreedy {
         if (rand.nextDouble() < epsilon) {
                 return rand.nextInt(0, model.k);
             } else {
-                ArrayList<Integer> argmax_a = getArgmax(q);
-                return argmax_a.get((rand.nextInt(0, argmax_a.size())));
+                ArrayList<Integer> argmaxA = getArgmax(q);
+                return argmaxA.get((rand.nextInt(0, argmaxA.size())));
             }
     }
 
-    public double[] run(int steps, double initial_q) {
-        initQ(initial_q);
+    public double[] run(int steps, double initialQ) {
+        initQ(initialQ);
         int[] n = new int[model.k];
         for (int j = 0; j < model.k; j++) {
             n[j] = 0;
@@ -46,20 +46,20 @@ public class EpsilonGreedy {
         double reward;
         for (int i = 0; i < steps; i++) {
             int a = selectAction();
-            reward = model.pull_lever(a);
+            reward = model.getReward(a);
             n[a] += 1;
             updateQ(a, reward, 1. / n[a]);
         }
         return q;
     }
 
-    public double[] run(int steps, double initial_q, double step_size) {
-        initQ(initial_q);
+    public double[] run(int steps, double initialQ, double stepSize) {
+        initQ(initialQ);
         double reward;
         for (int i = 0; i < steps; i++) {
             int a = selectAction();
-            reward = model.pull_lever(a);
-            updateQ(a, reward, step_size);
+            reward = model.getReward(a);
+            updateQ(a, reward, stepSize);
         }
         return q;
     }
