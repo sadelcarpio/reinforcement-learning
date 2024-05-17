@@ -18,17 +18,17 @@ public class EpsilonGreedy {
         this.epsilon = epsilon;
     }
 
-    private void update_q(int a, double reward, double step_size) {
+    private void updateQ(int a, double reward, double step_size) {
         q[a] = q[a] + step_size * (reward - q[a]);
     }
 
-    private void init_q(double initial_q) {
+    private void initQ(double initial_q) {
         for (int i = 0; i < model.k; i++) {
             q[i] = initial_q;
         }
     }
 
-    private int select_action() {
+    private int selectAction() {
         if (rand.nextDouble() < epsilon) {
                 return rand.nextInt(0, model.k);
             } else {
@@ -38,28 +38,28 @@ public class EpsilonGreedy {
     }
 
     public double[] run(int steps, double initial_q) {
-        init_q(initial_q);
+        initQ(initial_q);
         int[] n = new int[model.k];
         for (int j = 0; j < model.k; j++) {
             n[j] = 0;
         }
         double reward;
         for (int i = 0; i < steps; i++) {
-            int a = select_action();
+            int a = selectAction();
             reward = model.pull_lever(a);
             n[a] += 1;
-            update_q(a, reward, 1. / n[a]);
+            updateQ(a, reward, 1. / n[a]);
         }
         return q;
     }
 
     public double[] run(int steps, double initial_q, double step_size) {
-        init_q(initial_q);
+        initQ(initial_q);
         double reward;
         for (int i = 0; i < steps; i++) {
-            int a = select_action();
+            int a = selectAction();
             reward = model.pull_lever(a);
-            update_q(a, reward, step_size);
+            updateQ(a, reward, step_size);
         }
         return q;
     }

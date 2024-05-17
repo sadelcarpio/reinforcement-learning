@@ -10,7 +10,7 @@ public class Bandit {
         this.expected_reward = rand.nextGaussian();
     }
 
-    public double pull_lever() {
+    public double getReward() {
         return rand.nextGaussian(this.expected_reward, 1);
     }
 

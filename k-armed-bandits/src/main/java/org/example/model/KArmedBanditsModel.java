@@ -16,6 +16,6 @@ public class KArmedBanditsModel {
     }
 
     public double pull_lever(int i) {
-        return bandits[i].pull_lever();
+        return bandits[i].getReward();
     }
 }
