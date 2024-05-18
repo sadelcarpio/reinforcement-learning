@@ -1,16 +1,17 @@
-package org.example.epsilongreedy;
+package org.example.algorithms.epsilongreedy;
 
+import org.example.algorithms.KBanditMethod;
 import org.example.model.KArmedBanditsModel;
+import org.example.utils.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class EpsilonGreedy {
+public class EpsilonGreedy implements KBanditMethod {
     private static final Random rand = new Random();
     private final double[] q;
     private final double epsilon;
     private final KArmedBanditsModel model;
-
 
     public EpsilonGreedy(KArmedBanditsModel model, double epsilon) {
         q = new double[model.k];
@@ -30,13 +31,14 @@ public class EpsilonGreedy {
 
     private int selectAction() {
         if (rand.nextDouble() < epsilon) {
-                return rand.nextInt(0, model.k);
-            } else {
-                ArrayList<Integer> argmaxA = getArgmax(q);
-                return argmaxA.get((rand.nextInt(0, argmaxA.size())));
-            }
+            return rand.nextInt(0, model.k);
+        } else {
+            ArrayList<Integer> argmaxA = ArrayUtils.getArgmax(q);
+            return argmaxA.get((rand.nextInt(0, argmaxA.size())));
+        }
     }
 
+    @Override
     public double[] run(int steps, double initialQ) {
         initQ(initialQ);
         int[] n = new int[model.k];
@@ -53,6 +55,7 @@ public class EpsilonGreedy {
         return q;
     }
 
+    @Override
     public double[] run(int steps, double initialQ, double stepSize) {
         initQ(initialQ);
         double reward;
@@ -62,22 +65,5 @@ public class EpsilonGreedy {
             updateQ(a, reward, stepSize);
         }
         return q;
-    }
-
-    public static ArrayList<Integer> getArgmax(double[] q) {
-        ArrayList<Integer> argmax_a = new ArrayList<>();
-        int k = q.length;
-        double max = q[0];
-        for (int j = 0; j < k; j++) {
-            double q_a = q[j];
-            if (q_a > max) {
-                max = q_a;
-                argmax_a.clear();
-                argmax_a.add(j);
-            } else if (Double.compare(q_a, max) == 0) {
-                argmax_a.add(j);
-            }
-        }
-        return argmax_a;
     }
 }
