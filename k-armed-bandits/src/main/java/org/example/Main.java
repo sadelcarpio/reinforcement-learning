@@ -18,7 +18,7 @@ public class Main {
         EpsilonGreedy epsilonGreedyOptimizer = new EpsilonGreedy(0.1);
         NonStationaryEpsilonGreedy nonStatOptimizer = new NonStationaryEpsilonGreedy(0.1, 0.1);
         GradientBandit gradientBanditOptimizer = new GradientBandit(0.1);
-        KBanditMethod method = new KBanditMethod(model, nonStatOptimizer);
+        KBanditMethod method = new KBanditMethod(model, gradientBanditOptimizer);
         double[] q = method.run(2000, 0.0);
         System.out.println(Arrays.toString(model.bandits));
         System.out.println(Arrays.toString(q));

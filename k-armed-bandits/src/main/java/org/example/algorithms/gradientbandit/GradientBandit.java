@@ -17,12 +17,13 @@ public class GradientBandit extends QOptimizer {
     @Override
     public void update(int a, double reward) {
         n[a] += 1;
+        double baseline = Arrays.stream(q).sum() / (Arrays.stream(n).sum());  // mean over all actions
         for (int i = 0; i < k; i++) {
             pi[i] = Math.exp(h[i]) / (Arrays.stream(h).map(Math::exp).sum());
-            if (i == a) h[i] = h[i] + stepSize * (reward - q[i]) * (1 - pi[i]);
-            else h[i] = h[i] - stepSize * (reward - q[i]) * pi[i];
+            if (i == a) h[i] = h[i] + stepSize * (reward - baseline) * (1 - pi[i]);
+            else h[i] = h[i] - stepSize * (reward - baseline) * pi[i];
         }
-        q[a] = q[a] + (1. / n[a]) * (reward - q[a]);  // q is mean reward over time
+        q[a] = q[a] + (1. / n[a]) * (reward - q[a]);  // q is mean reward over time for each action
     }
 
     @Override
