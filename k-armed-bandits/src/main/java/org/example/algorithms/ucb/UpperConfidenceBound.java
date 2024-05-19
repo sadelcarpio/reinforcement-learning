@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 public class UpperConfidenceBound extends QOptimizer {
     private double[] ucb;
-    private int[] n;
     private final double epsilon, c;
 
     public UpperConfidenceBound(double epsilon, double c) {
@@ -18,8 +17,7 @@ public class UpperConfidenceBound extends QOptimizer {
 
     @Override
     public void update(int a, double reward) {
-        n[a] += 1;
-        q[a] = q[a] + (1. / n[a]) * (reward - q[a]);
+        super.update(a, reward);
         for (int i = 0; i < k; i++) {
             if (n[i] != 0) ucb[i] = q[i] + c * Math.sqrt(Math.log(n[i]) / n[i]);
         }
@@ -27,12 +25,8 @@ public class UpperConfidenceBound extends QOptimizer {
 
     @Override
     public void init(double initialQ, int k) {
-        this.k = k;
-        this.q = new double[k];
+        super.init(initialQ, k);
         this.ucb = new double[k];
-        this.n = new int[k];
-        Arrays.fill(n, 0);
-        Arrays.fill(q, initialQ);
         Arrays.fill(ucb, initialQ);
     }
 

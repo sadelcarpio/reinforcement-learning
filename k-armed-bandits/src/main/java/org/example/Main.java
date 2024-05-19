@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.algorithms.KBanditMethod;
 import org.example.algorithms.epsilongreedy.EpsilonGreedy;
+import org.example.algorithms.epsilongreedy.NonStationaryEpsilonGreedy;
 import org.example.algorithms.gradientbandit.GradientBandit;
 import org.example.algorithms.ucb.UpperConfidenceBound;
 import org.example.model.KArmedBanditsModel;
@@ -15,8 +16,9 @@ public class Main {
         KArmedBanditsModel model = new KArmedBanditsModel(k);
         UpperConfidenceBound ucbOptimizer = new UpperConfidenceBound(0.1, 1);
         EpsilonGreedy epsilonGreedyOptimizer = new EpsilonGreedy(0.1);
+        NonStationaryEpsilonGreedy nonStatOptimizer = new NonStationaryEpsilonGreedy(0.1, 0.1);
         GradientBandit gradientBanditOptimizer = new GradientBandit(0.1);
-        KBanditMethod method = new KBanditMethod(model, gradientBanditOptimizer);
+        KBanditMethod method = new KBanditMethod(model, nonStatOptimizer);
         double[] q = method.run(2000, 0.0);
         System.out.println(Arrays.toString(model.bandits));
         System.out.println(Arrays.toString(q));

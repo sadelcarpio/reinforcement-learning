@@ -7,7 +7,6 @@ import java.util.Arrays;
 
 public class GradientBandit extends QOptimizer {
     private final double stepSize;
-    private int[] n;
     private double[] h;
     private double[] pi;
 
@@ -28,13 +27,9 @@ public class GradientBandit extends QOptimizer {
 
     @Override
     public void init(double initialQ, int k) {
-        this.k = k;
-        this.q = new double[k];
+        super.init(initialQ, k);
         this.h = new double[k];
         this.pi = new double[k];
-        this.n = new int[k];
-        Arrays.fill(n, 0);
-        Arrays.fill(q, initialQ);
         Arrays.fill(h, 0.0);
         Arrays.fill(pi, 1. / k);
     }
