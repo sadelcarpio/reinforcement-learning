@@ -6,10 +6,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class TestGetArgMax {
+public class TestArrayUtils {
 
     @Test
-    public void testAdd() {
+    public void testGetArgMax() {
         double[] testList = new double[]{1., 2., 3., 4.};
         double[] testList2 = new double[]{1., 3., 1., 3., 4., 2., 4.};
         List<Integer> argmax = ArrayUtils.getArgmax(testList);

@@ -1,10 +1,8 @@
 package org.example.algorithms.gradientbandit;
 
-import org.example.Main;
 import org.example.algorithms.QOptimizer;
 import org.example.utils.ArrayUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GradientBandit extends QOptimizer {

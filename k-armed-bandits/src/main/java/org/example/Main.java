@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         int k = 10;
         KArmedBanditsModel model = new KArmedBanditsModel(k);
-        UpperConfidenceBound UcbOptimizer = new UpperConfidenceBound(0.1, 1);
+        UpperConfidenceBound ucbOptimizer = new UpperConfidenceBound(0.1, 1);
         EpsilonGreedy epsilonGreedyOptimizer = new EpsilonGreedy(0.1);
         GradientBandit gradientBanditOptimizer = new GradientBandit(0.1);
         KBanditMethod method = new KBanditMethod(model, gradientBanditOptimizer);

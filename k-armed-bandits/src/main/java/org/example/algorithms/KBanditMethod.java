@@ -2,8 +2,6 @@ package org.example.algorithms;
 
 import org.example.model.KArmedBanditsModel;
 
-import java.util.Random;
-
 public class KBanditMethod {
     private final KArmedBanditsModel model;
     private final QOptimizer optimizer;
