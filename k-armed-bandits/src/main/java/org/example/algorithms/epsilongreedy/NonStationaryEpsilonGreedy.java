@@ -15,25 +15,8 @@ public class NonStationaryEpsilonGreedy extends EpsilonGreedy{
     }
 
     @Override
-    public void init(double initialQ, int k) {
-        super.init(initialQ, k);
-        this.qNonStat = new double[k];
-        Arrays.fill(qNonStat, initialQ);
-    }
-
-    @Override
     public void update(int a, double reward) {
-        super.update(a, reward);
-        qNonStat[a] = qNonStat[a] + stepSize * (reward - qNonStat[a]);
-    }
-
-    @Override
-    public int selectAction() {
-        if (rand.nextDouble() < epsilon) {
-            return rand.nextInt(0, k);
-        } else {
-            ArrayList<Integer> argmaxA = ArrayUtils.getArgmax(qNonStat);
-            return argmaxA.get((rand.nextInt(0, argmaxA.size())));
-        }
+        n[a] += 1;
+        q[a] = q[a] + stepSize * (reward - q[a]);
     }
 }

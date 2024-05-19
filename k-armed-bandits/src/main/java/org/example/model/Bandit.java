@@ -3,8 +3,8 @@ package org.example.model;
 import java.util.Random;
 
 public class Bandit {
-    private static final Random rand = new Random();
-    public final double expected_reward;
+    protected static final Random rand = new Random();
+    public double expected_reward;
 
     public Bandit() {
         this.expected_reward = rand.nextGaussian();
