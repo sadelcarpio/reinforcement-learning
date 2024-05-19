@@ -4,9 +4,6 @@ public class KArmedBanditsModel {
     public final int k;
     public final Bandit[] bandits;
 
-    /**
-     * @param k number of bandits
-     */
     public KArmedBanditsModel(int k) {
         this.k = k;
         bandits = new Bandit[k];

@@ -1,6 +1,7 @@
 package org.example.utils;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ArrayUtils {
     public static ArrayList<Integer> getArgmax(double[] q) {
@@ -18,5 +19,19 @@ public class ArrayUtils {
             }
         }
         return argmax_a;
+    }
+
+    public static int randomIndexWithWeightedProb(double[] p, Random rand) {
+        int n = p.length;
+        double[] cumulativeProbs = new double[n];
+        cumulativeProbs[0] = p[0];
+        for (int i = 1; i < n; i++) {
+            cumulativeProbs[i] = cumulativeProbs[i - 1] + p[i];
+        }
+        double randomNumber = rand.nextDouble() * cumulativeProbs[n - 1];
+        for (int i = 0; i < n; i++) {
+            if (randomNumber <= cumulativeProbs[i]) return i;
+        }
+        return -1;  // basically an error
     }
 }

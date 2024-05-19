@@ -1,87 +1,48 @@
 package org.example.algorithms.ucb;
 
-import org.example.algorithms.KBanditMethod;
-import org.example.model.KArmedBanditsModel;
+import org.example.algorithms.QOptimizer;
 import org.example.utils.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Arrays;
 
-public class UpperConfidenceBound implements KBanditMethod {
-    private static final Random rand = new Random();
-    private final double[] q, ucb;
-    private final int[] n;
+public class UpperConfidenceBound extends QOptimizer {
+    private double[] ucb;
+    private int[] n;
     private final double epsilon, c;
-    private final KArmedBanditsModel model;
 
-    public UpperConfidenceBound(KArmedBanditsModel model, double epsilon, double c) {
-        q = new double[model.k];
-        ucb = new double[model.k];
-        this.n = new int[model.k];
-        this.model = model;
+    public UpperConfidenceBound(double epsilon, double c) {
         this.epsilon = epsilon;
         this.c = c;
-        for (int j = 0; j < model.k; j++) {
-            n[j] = 0;
+    }
+
+    @Override
+    public void update(int a, double reward) {
+        n[a] += 1;
+        q[a] = q[a] + (1. / n[a]) * (reward - q[a]);
+        for (int i = 0; i < k; i++) {
+            if (n[i] != 0) ucb[i] = q[i] + c * Math.sqrt(Math.log(n[i]) / n[i]);
         }
     }
 
-    private void updateQ(int a, double reward, double stepSize) {
-        q[a] = q[a] + stepSize * (reward - q[a]);
+    @Override
+    public void init(double initialQ, int k) {
+        this.k = k;
+        this.q = new double[k];
+        this.ucb = new double[k];
+        this.n = new int[k];
+        Arrays.fill(n, 0);
+        Arrays.fill(q, initialQ);
+        Arrays.fill(ucb, initialQ);
     }
 
-    private void initQ(double initialQ) {
-        for (int a = 0; a < model.k; a++) {
-            q[a] = initialQ;
-        }
-    }
-
-    private void initUcb() {
-        System.arraycopy(q, 0, ucb, 0, model.k);
-    }
-
-    private int selectAction() {
+    @Override
+    public int selectAction() {
         if (rand.nextDouble() < epsilon) {
-            return rand.nextInt(0, model.k);
+            return rand.nextInt(0, k);
         } else {
             ArrayList<Integer> argmaxA = ArrayUtils.getArgmax(ucb);
             return argmaxA.get((rand.nextInt(0, argmaxA.size())));
         }
-    }
-
-    private void updateUcb() {
-        for (int i = 0; i < model.k; i++) {
-            ucb[i] = q[i] + c * Math.sqrt(Math.log(n[i]) / n[i]);
-        }
-    }
-
-    @Override
-    public double[] run(int steps, double initialQ) {
-        initQ(initialQ);
-        initUcb();
-        double reward;
-        for (int i = 0; i < steps; i++) {
-            int a = selectAction();
-            n[a] += 1;
-            updateUcb();
-            reward = model.getReward(a);
-            updateQ(a, reward, 1. / n[a]);
-        }
-        return q;
-    }
-
-    @Override
-    public double[] run(int steps, double initialQ, double stepSize) {
-        initQ(initialQ);
-        initUcb();
-        double reward;
-        for (int i = 0; i < steps; i++) {
-            int a = selectAction();
-            n[a] += 1;
-            updateUcb();
-            reward = model.getReward(a);
-            updateQ(a, reward, stepSize);
-        }
-        return q;
     }
 }
