@@ -6,6 +6,7 @@ import org.example.algorithms.epsilongreedy.NonStationaryEpsilonGreedy;
 import org.example.algorithms.gradientbandit.GradientBandit;
 import org.example.algorithms.ucb.UpperConfidenceBound;
 import org.example.model.KArmedBanditsModel;
+import org.example.tester.KBanditTester;
 
 import java.util.Arrays;
 
@@ -22,5 +23,14 @@ public class Main {
         double[] q = method.run(2000, 0.0);
         System.out.println(Arrays.toString(model.bandits));
         System.out.println(Arrays.toString(q));
+        System.out.println("Testing optimal action taken");
+        KArmedBanditsModel testModel = new KArmedBanditsModel(k, true);
+        EpsilonGreedy testOptimizer = new EpsilonGreedy(0.0);
+        KBanditMethod testMethod = new KBanditMethod(testModel, testOptimizer);
+        KBanditTester tester = new KBanditTester();
+        double[] testQ = testMethod.run(100, 0.0, tester);
+        System.out.println(Arrays.toString(testModel.bandits));
+        System.out.println(Arrays.toString(testQ));
+        System.out.println(Arrays.toString(tester.wasOptimal));
     }
 }

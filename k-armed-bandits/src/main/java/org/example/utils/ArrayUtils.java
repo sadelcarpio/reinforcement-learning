@@ -34,4 +34,12 @@ public class ArrayUtils {
         }
         return -1;  // basically an error
     }
+
+    public static double trueRatio(boolean[] arr) {
+        int trues = 0;
+        for (boolean b : arr) {
+            if (b) trues++;
+        }
+        return (double) trues / arr.length;
+    }
 }
