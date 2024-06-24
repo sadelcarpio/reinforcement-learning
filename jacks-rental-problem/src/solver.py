@@ -6,9 +6,9 @@ from src.policy_improvement import PolicyImprovement
 
 
 class PolicySolver:
-    def __init__(self, model: CarRentalModel, gamma: float = 0.9, theta: float = 0.1):
+    def __init__(self, model: CarRentalModel, gamma: float = 0.9, theta: float = 0.0001):
         self.model = model
-        self.pi = np.zeros((model.max_cars + 1, model.max_cars + 1))
+        self.pi = np.zeros((model.max_cars + 1, model.max_cars + 1), dtype=int)
         self.V = np.zeros((model.max_cars + 1, model.max_cars + 1))
         self.theta = theta
         self.evaluator = PolicyEvaluation(model, gamma)

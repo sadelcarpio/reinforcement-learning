@@ -8,6 +8,7 @@ class CarRentalModel:
                  moving_cost: float,
                  expectations=None,
                  max_cars: int = 20,
+                 max_cars_to_move: int = 5,
                  max_expected_updates: int = 10):
         """
         Car rental model for Jack's Rental Problem considering two locations.
@@ -21,6 +22,7 @@ class CarRentalModel:
             self.expectations = {'req1': 3, 'req2': 4, 'ret1': 3, 'ret2': 2}
         self.rental_cost = rental_cost
         self.moving_cost = moving_cost
+        self.max_cars_to_move = max_cars_to_move
         self.max_cars = max_cars
         self.max_expected_updates = max_expected_updates
         self.update_probs = {key: [poisson.pmf(value, expected) for value in range(self.max_cars + 1)]
@@ -40,23 +42,22 @@ class CarRentalModel:
             self.state.n_cars_first_location = max(self.state.n_cars_first_location - n_cars, 0)
             self.state.n_cars_second_location = min(self.state.n_cars_second_location + n_cars,
                                                     self.max_cars)
+            return - self.moving_cost * n_cars
         else:
-            self.state.n_cars_second_location = max(self.state.n_cars_second_location + n_cars, 0)
+            self.state.n_cars_second_location = max(self.state.n_cars_second_location - n_cars, 0)
             self.state.n_cars_first_location = min(self.state.n_cars_first_location - n_cars, self.max_cars)
-        return - self.moving_cost * n_cars
+            return self.moving_cost * n_cars
 
     def states(self):
-        for i in range(self.max_cars):
-            for j in range(self.max_cars):
+        for i in range(self.max_cars + 1):
+            for j in range(self.max_cars + 1):
                 yield RentalModelState(i, j)
 
     def probable_next_states(self):
         for rented_cars_1 in range(self.max_expected_updates):
             for rented_cars_2 in range(self.max_expected_updates):
-                for returned_cars_1 in range(self.max_expected_updates):
-                    for returned_cars_2 in range(self.max_expected_updates):
-                        yield ProbableUpdates(
-                            rented_cars_1, self.update_probs['req1'][rented_cars_1],
-                            rented_cars_2, self.update_probs['req2'][rented_cars_2],
-                            returned_cars_1, self.update_probs['ret1'][returned_cars_1],
-                            returned_cars_2, self.update_probs['ret2'][returned_cars_2])
+                yield ProbableUpdates(
+                    rented_cars_1, self.update_probs['req1'][rented_cars_1],
+                    rented_cars_2, self.update_probs['req2'][rented_cars_2],
+                    self.expectations['ret1'], 1.0,
+                    self.expectations['ret2'], 1.0)
