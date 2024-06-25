@@ -23,29 +23,23 @@ class PolicyEvaluation:
         return V
 
     def step(self, a, state, V):
-        n_cars_1 = state.n_cars_first_location
-        n_cars_2 = state.n_cars_second_location
-        cars_moved_to_charge = a
-        if a > 0:  # to location 2
-            cars_moved_to_charge = max(cars_moved_to_charge, 0)
-            n_cars_1 -= a
-        elif a < 0:
-            n_cars_2 -= abs(a)
+        nLoc1 = state.n_cars_first_location
+        nLoc2 = state.n_cars_second_location
 
-        action_return = -abs(cars_moved_to_charge) * self.model.moving_cost
-
-        if a > 0:  # to location 2
-            n_cars_2 = min(n_cars_2 + a, self.model.max_cars)
-        elif a < 0:
-            n_cars_1 = min(n_cars_1 + abs(a), self.model.max_cars)
+        n1 = nLoc1
+        n2 = nLoc2
+        nLoc1 = min(max(n1 - a, 0), self.model.max_cars)
+        nLoc2 = min(max(n2 + a, 0), self.model.max_cars)
+        net_moved = min(abs(nLoc1 - n1), abs(nLoc2 - n2))
+        action_return = - net_moved * self.model.moving_cost
 
         for state_prime in self.model.probable_next_states():
-            req1 = min(state_prime.req1, state.n_cars_first_location)
-            req2 = min(state_prime.req2, state.n_cars_second_location)
+            req1 = min(state_prime.req1, nLoc1)
+            req2 = min(state_prime.req2, nLoc2)
             p = state_prime.preq1 * state_prime.preq2 * state_prime.pret1 * state_prime.pret2
-            new_n_cars_1 = min(state.n_cars_first_location - req1 + state_prime.ret1,
+            new_n_cars_1 = min(nLoc1 - req1 + state_prime.ret1,
                                self.model.max_cars)
-            new_n_cars_2 = min(state.n_cars_second_location - req2 + state_prime.ret2,
+            new_n_cars_2 = min(nLoc2 - req2 + state_prime.ret2,
                                self.model.max_cars)
             reward = (req1 + req2) * self.model.rental_cost + self.gamma * V[new_n_cars_1, new_n_cars_2]
             action_return += p * reward

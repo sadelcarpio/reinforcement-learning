@@ -1,6 +1,5 @@
 from src.distributions import Poisson
 from src.states import RentalModelState, ProbableUpdates
-from scipy.stats import poisson
 
 
 class CarRentalModel:
@@ -25,28 +24,9 @@ class CarRentalModel:
         self.max_cars_to_move = max_cars_to_move
         self.max_cars = max_cars
         self.max_expected_updates = max_expected_updates
-        self.update_probs = {key: [poisson.pmf(value, expected) for value in range(self.max_cars + 1)]
+        self.update_probs = {key: [Poisson.pmf(value, expected) for value in range(self.max_cars + 1)]
                              for key, expected in self.expectations.items()}
         self.state = None
-
-    def set_state(self, state: RentalModelState):
-        self.state = state
-
-    def move(self, n_cars: int):
-        """
-        Action to move the cars from one location to another
-        :param n_cars: net number of cars to move. If positive, 1 -> 2. If negative, 2 -> 1.
-        :return: Cost of moving the number of cars (- self.moving_cost * n_cars)
-        """
-        if n_cars > 0:
-            self.state.n_cars_first_location = max(self.state.n_cars_first_location - n_cars, 0)
-            self.state.n_cars_second_location = min(self.state.n_cars_second_location + n_cars,
-                                                    self.max_cars)
-            return - self.moving_cost * n_cars
-        else:
-            self.state.n_cars_second_location = max(self.state.n_cars_second_location - n_cars, 0)
-            self.state.n_cars_first_location = min(self.state.n_cars_first_location - n_cars, self.max_cars)
-            return self.moving_cost * n_cars
 
     def states(self):
         for i in range(self.max_cars + 1):

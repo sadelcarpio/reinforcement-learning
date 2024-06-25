@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib import pyplot as plt
 
 from src.model import CarRentalModel
 from src.policy_evaluation import PolicyEvaluation
@@ -6,7 +7,7 @@ from src.policy_improvement import PolicyImprovement
 
 
 class PolicySolver:
-    def __init__(self, model: CarRentalModel, gamma: float = 0.9, theta: float = 0.0001):
+    def __init__(self, model: CarRentalModel, gamma: float = 0.9, theta: float = 0.001):
         self.model = model
         self.pi = np.zeros((model.max_cars + 1, model.max_cars + 1), dtype=int)
         self.V = np.zeros((model.max_cars + 1, model.max_cars + 1))
@@ -22,7 +23,9 @@ class PolicySolver:
             print(f"Policy iteration #{it}")
             self.evaluator.evaluate(self.pi, self.V, self.theta)
             policy_stable = self.improver.improve(self.pi, self.V)
-        print("Reached stable policy :)")
+        print(f"Reached stable policy after {it} iterations :)")
+        plt.imshow(self.pi, origin='lower')
+        plt.show()
 
 
 if __name__ == '__main__':
