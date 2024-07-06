@@ -10,7 +10,7 @@ class CarRentalModel:
                  expectations=None,
                  max_cars: int = 20,
                  max_cars_to_move: int = 5,
-                 max_expected_updates: int = 11,
+                 max_expected_updates: int = 10,
                  use_expected_values: bool = True):
         """
         Car rental model for Jack's Rental Problem considering two locations.
