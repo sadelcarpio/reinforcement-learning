@@ -1,4 +1,4 @@
-import org.example.utils.ArrayUtils;
+import org.reinforcement.bandits.deprecated.utils.ArrayUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
